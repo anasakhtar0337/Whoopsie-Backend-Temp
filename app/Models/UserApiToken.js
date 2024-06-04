@@ -36,11 +36,12 @@ class UserApiToken extends RestModel {
     }
 
     async beforeCreateHook(request, params) {
-        await this.deleteRecord(params.slug);
+        const type = params?.type ? params.type : API_TOKENS_ENUM.ACCESS
+        await this.deleteRecord(params.slug, type);
         params.api_token = this.generateApiToken(params.slug)
         params.device_type = request.body.device_type
         params.device_token = request.body.device_token
-        params.type = params?.type ? params.type : API_TOKENS_ENUM.ACCESS
+        params.type = type;
         params.created_at = new Date()
 
     }
@@ -83,14 +84,19 @@ class UserApiToken extends RestModel {
         return _.isEmpty(record) ? {} : record.toJSON();
     }
 
-    async deleteRecord(slug) {
+    async deleteRecord(slug, type = 'ALL') {
         console.log("Delete Api Token : ", slug)
+
+        const conditions = {};
+        conditions.slug = slug;
+        if (type !== 'ALL') {
+            conditions.type = type
+        }
+
         const query = await this.orm.update({
             deletedAt: new Date()
         }, {
-            where: {
-                slug: slug
-            }
+            where: conditions
         })
         return true;
 

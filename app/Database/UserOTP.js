@@ -16,7 +16,7 @@ module.exports = (sequelize, Sequelize) => {
             type: Sequelize.STRING(15),
             allowNull: true,
             onDelete: 'CASCADE',
-            onUpdate: 'NO ACTION',
+            onUpdate: 'CASCADE',
             references: {
                 model: require("./User.js")(sequelize, Sequelize),
                 key: 'mobile_no'
@@ -26,7 +26,7 @@ module.exports = (sequelize, Sequelize) => {
             type: Sequelize.STRING(50),
             allowNull: true,
             onDelete: 'CASCADE',
-            onUpdate: 'NO ACTION',
+            onUpdate: 'CASCADE',
             references: {
                 model: require("./User.js")(sequelize, Sequelize),
                 key: 'email'

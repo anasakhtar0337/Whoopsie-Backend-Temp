@@ -21,6 +21,7 @@ router.post('/verify-otp/change-number', checkApiToken, (req, res) => (new UserO
 
 /*----------------------------------   User Configure Account Routes  ------------------------------*/
 router.patch('/', apiAuthentication, (req, res) => (new UserController()).update({ request: req, response: res }))
+router.patch('/change-number', OTPTokenAuthentication.authenticate, (req, res) => (new UserController()).changePhoneNumber({ request: req, response: res }))
 router.delete('/', checkApiToken, apiAuthentication, (req, res) => (new UserController()).destroy({ request: req, response: res }))
 router.post('/login', checkApiToken, (req, res) => (new UserController()).login({ request: req, response: res }))
 router.post('/logout', apiAuthentication, (req, res) => (new UserController()).logout({ request: req, response: res }))

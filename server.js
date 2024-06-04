@@ -52,7 +52,7 @@ app.get("/", (req, res) => res.render("welcome"))
 
 
 /**Server Starting */
-const force = true;
+const force = false;
 const alter = false;
 const httpServer = http.createServer(app)
 

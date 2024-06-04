@@ -29,8 +29,7 @@ module.exports = (sequelize, Sequelize) => {
             allowNull: true,
         },
         type: {
-            type: Sequelize.ENUM,
-            values: ['ACCESS', 'RESET'],
+            type: Sequelize.STRING(30),
             allowNull: false
 
         },

@@ -72,7 +72,6 @@ class UserController extends RestController {
             let rules = {
                 "mobile_no": [
                     'required',
-                    'unique:users,mobile_no',
                     "max:18"
                 ],
                 "device_type": "required|in:web,ios,android",
@@ -127,6 +126,67 @@ class UserController extends RestController {
                 500
             )
         }
+    }
+
+    async changePhoneNumber({ request, response }) {
+        this.request = request;
+        this.response = response;
+        //validation rules
+        let rules = {
+            "current_mobileNo": 'required',
+            "new_mobileNo": 'required',
+        }
+        let validator = await validateAll(request.body, rules);
+        let validation_error = this.validateRequestParams(validator);
+        if (this.__is_error)
+            return validation_error;
+
+        let user = this.request.user;
+        let params = this.request.body;
+
+
+        //check current and old numver
+        if (params.current_mobileNo != user.mobile_no)
+            return this.sendError(
+                "Current number is invalid.",
+                {},
+                400
+            );
+
+        //check current and old numver
+        if (params.current_mobileNo == params.new_mobileNo)
+            return this.sendError(
+                "Current number should not be same as new number",
+                {},
+                400
+            );
+
+        const existing_user = await this.modal.getUserByMobileNo(params.new_mobileNo);
+        if (!_.isEmpty(existing_user))
+            return this.sendError(
+                "User already registered with this mobile no.",
+                {},
+                400
+            );
+
+        //update new password
+        let update_params = {
+            mobile_no: params.new_mobileNo
+        }
+        //update user
+        await this.modal.updateUser({ slug: user.slug }, update_params);
+
+        //remove all api token except current api token
+        await UserApiToken.instance().deleteRecord(user.slug)
+
+        this.__is_paginate = false;
+        this.__collection = false;
+        this.sendResponse(
+            200,
+            "Number updated successfully",
+            {}
+        );
+        return;
     }
 
 

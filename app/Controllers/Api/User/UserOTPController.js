@@ -97,6 +97,7 @@ class UserOTPController extends RestController {
         }
 
         user = await User.instance().getUserByMobileNo(params.mobile_no);
+        await User.instance().verifySocial(this.request, user.slug)
 
         params.slug = user.slug;
         await UserApiToken.instance().createRecord(

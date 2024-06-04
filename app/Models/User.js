@@ -88,15 +88,15 @@ class User extends RestModel {
         // const userApiToken = UserApiToken.instance();
         // await userApiToken.createRecord(request, extractFields(record, userApiToken.getFields()))
 
-        const otp_record = {};
+        // const otp_record = {};
 
-        if ((constants.SMS_VERIFICATION == 1) && record.mobile_no) {
-            otp_record.mobile_no = record.mobile_no;
-        }
-        if (!_.isEmpty(otp_record)) {
-            await UserOTP.instance().createRecord(request, otp_record)
-        }
-        return;
+        // if ((constants.SMS_VERIFICATION == 1) && record.mobile_no) {
+        //     otp_record.mobile_no = record.mobile_no;
+        // }
+        // if (!_.isEmpty(otp_record)) {
+        //     await UserOTP.instance().createRecord(request, otp_record)
+        // }
+        // return;
 
     }
 
@@ -148,6 +148,21 @@ class User extends RestModel {
         })
 
         return _.isEmpty(query) ? {} : _.isEmpty(query.toJSON()?.user_api_tokens) ? {} : query.toJSON();
+    }
+
+    async verifySocial(request, slug) {
+        await this.orm.update(
+            {
+                mobile_verifyAt: new Date(),
+                is_mobile_verify: true
+            },
+            {
+                where: {
+                    slug: slug,
+                    deletedAt: null
+                }
+            })
+        return true;
     }
 
     async updateUser(condition, data) {
