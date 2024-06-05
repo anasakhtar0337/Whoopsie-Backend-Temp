@@ -30,8 +30,8 @@ class UserApiTokenController extends RestController {
     }
 
     async beforeUpdateLoadModel() {
-        const token = this.request.user.user_api_tokens
-        this.params.id = token.length ? token[0].slug : ''
+        const token = this.request.user.user_api_tokens.find(item => item.api_token === this.request.authorization)
+        this.params.id = token?.slug || ''
     }
 
     async afterUpdateLoadModel() {
