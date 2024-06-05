@@ -6,6 +6,7 @@ const multer = require("multer");
 const apiAuthentication = require("../Middleware/ApiAuthentication");
 const UserOTPController = require("../Controllers/Api/User/UserOTPController");
 const OTPTokenAuthentication = require("../Middleware/OTPTokenAuthentication");
+const UserApiTokenController = require("../Controllers/Api/User/UserApiTokenController");
 const upload = multer()
 
 
@@ -21,6 +22,7 @@ router.post('/verify-otp/change-number', checkApiToken, (req, res) => (new UserO
 
 /*----------------------------------   User Configure Account Routes  ------------------------------*/
 router.patch('/', apiAuthentication, (req, res) => (new UserController()).update({ request: req, response: res }))
+router.patch('/device-token', apiAuthentication, (req, res) => (new UserApiTokenController()).update({ request: req, response: res }))
 router.patch('/change-number', OTPTokenAuthentication.authenticate, (req, res) => (new UserController()).changePhoneNumber({ request: req, response: res }))
 router.delete('/', checkApiToken, apiAuthentication, (req, res) => (new UserController()).destroy({ request: req, response: res }))
 router.post('/login', checkApiToken, (req, res) => (new UserController()).login({ request: req, response: res }))
