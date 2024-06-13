@@ -18,12 +18,13 @@ router.get("/", (req, res) => {
 /*----------------------------------   OTP Routes  ------------------------------*/
 router.post('/send-otp', checkApiToken, (req, res) => (new UserOTPController()).store({ request: req, response: res }))
 router.post('/verify-otp/register', checkApiToken, (req, res) => (new UserOTPController()).verifyOTPRegister({ request: req, response: res }))
-router.post('/verify-otp/change-number', checkApiToken, (req, res) => (new UserOTPController()).verifyOTPChangeNumber({ request: req, response: res }))
+router.post('/verify-otp/change-number', apiAuthentication, (req, res) => (new UserOTPController()).verifyOTPChangeNumber({ request: req, response: res }))
+router.post('/verify-otp/new-number', OTPTokenAuthentication.authenticate, (req, res) => (new UserOTPController()).verifyOTPNewNumber({ request: req, response: res }))
 
 /*----------------------------------   User Configure Account Routes  ------------------------------*/
 router.patch('/', apiAuthentication, (req, res) => (new UserController()).update({ request: req, response: res }))
 router.patch('/device-token', apiAuthentication, (req, res) => (new UserApiTokenController()).update({ request: req, response: res }))
-router.patch('/change-number', OTPTokenAuthentication.authenticate, (req, res) => (new UserController()).changePhoneNumber({ request: req, response: res }))
+// router.patch('/change-number', OTPTokenAuthentication.authenticate, (req, res) => (new UserController()).changePhoneNumber({ request: req, response: res }))
 router.delete('/', checkApiToken, apiAuthentication, (req, res) => (new UserController()).destroy({ request: req, response: res }))
 router.post('/login', checkApiToken, (req, res) => (new UserController()).login({ request: req, response: res }))
 router.post('/logout', apiAuthentication, (req, res) => (new UserController()).logout({ request: req, response: res }))

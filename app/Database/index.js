@@ -43,28 +43,6 @@ db.user_api_tokens.belongsTo(db.users, {
 
 
 
-/*User OTP Model Relation */
-db.users.hasMany(db.user_otp, { foreignKey: "email", sourceKey: 'email' });
-db.user_otp.belongsTo(db.users, {
-    foreignKey: "email",
-    targetKey: 'email'
-}, {
-    onDelete: 'cascade',
-    onUpdate: 'no action'
-});
-
-
-db.users.hasMany(db.user_otp, { foreignKey: "mobile_no", sourceKey: 'mobile_no' });
-db.user_otp.belongsTo(db.users, {
-    foreignKey: "mobile_no",
-    targetKey: 'mobile_no'
-}, {
-    onDelete: 'cascade',
-    onUpdate: 'no action'
-});
-
-
-
 /*User Groups Model Relation */
 db.user_groups.hasMany(db.users, { foreignKey: "user_type", sourceKey: 'type' });
 db.users.belongsTo(db.user_groups, {

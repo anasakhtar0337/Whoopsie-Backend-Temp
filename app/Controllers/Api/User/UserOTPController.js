@@ -122,11 +122,11 @@ class UserOTPController extends RestController {
     async verifyOTPChangeNumber({ request, response }) {
         this.request = request;
         this.response = response;
-
         let params = this.request.body
+        let user = this.request.user;
+        let record;
 
         const rules = {
-            mobile_no: 'required',
             otp: "required"
         }
 
@@ -136,9 +136,8 @@ class UserOTPController extends RestController {
         if (this.__is_error)
             return validation_error;
 
-        let user;
-        let record;
 
+        params.mobile_no = user.mobile_no || ''
         if (params.mobile_no) {
             record = await this.modal.verifyOTP(request, params, OTP_VERIFICATION_TYPE.MOBILE_NO)
         }
@@ -150,8 +149,6 @@ class UserOTPController extends RestController {
                 400
             )
         }
-
-        user = await User.instance().getUserByMobileNo(params.mobile_no);
 
         const payload = {}
         payload.slug = user.slug;
@@ -172,8 +169,66 @@ class UserOTPController extends RestController {
         )
     }
 
+    async verifyOTPNewNumber({ request, response }) {
+        this.request = request;
+        this.response = response;
+        let user = this.request.user;
+
+        let params = this.request.body
+
+        const rules = {
+            mobile_no: 'required',
+            otp: "required"
+        }
+
+        const validator = await validateAll(params, rules)
+        const validation_error = await this.validateRequestParams(validator)
+
+        if (this.__is_error)
+            return validation_error;
+
+        let record;
+
+        if (params.mobile_no) {
+            record = await this.modal.verifyOTP(request, params, OTP_VERIFICATION_TYPE.MOBILE_NO)
+        }
+
+        if (_.isEmpty(record)) {
+            return this.sendError(
+                'Incorrect OTP',
+                {},
+                400
+            )
+        }
+
+        //update new password
+        user.mobile_no = params.mobile_no;
+        let update_params = {
+            mobile_no: params.mobile_no
+        }
+        //update user
+        await User.instance().updateUser({ slug: user.slug }, update_params);
 
 
+        const payload = {}
+        payload.slug = user.slug;
+        payload.type = API_TOKENS_ENUM.ACCESS
+        payload.remove_type = 'ALL'
+
+        await UserApiToken.instance().createRecord(
+            request,
+            payload,
+        )
+        await this.modal.deleteRecord(user.email, user.mobile_no)
+
+        this.resource = 'User'
+        this.__is_paginate = false;
+        return this.sendResponse(
+            200,
+            'Number changed successfully.',
+            user
+        )
+    }
 
 }
 

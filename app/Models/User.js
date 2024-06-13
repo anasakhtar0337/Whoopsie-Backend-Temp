@@ -4,9 +4,7 @@ const randomstring = require("randomstring");
 
 const RestModel = require("./RestModel")
 const UserApiToken = require('./UserApiToken');
-const UserOTP = require('./UserOTP');
 const { LOGIN_TYPE, API_TOKENS_ENUM, ROLES } = require('../config/enum');
-const constants = require('../config/constants');
 
 class User extends RestModel {
 
@@ -72,6 +70,7 @@ class User extends RestModel {
         params.slug = uuidv4();
         params.username = null;
         params.name = null;
+        params.email = null;
         params.password = randomstring.generate(8)
         params.login_type = LOGIN_TYPE.CUSTOM
         params.createdAt = new Date();

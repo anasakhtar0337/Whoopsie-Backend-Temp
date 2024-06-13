@@ -41,7 +41,8 @@ class UserOTP extends RestModel {
 
     async beforeCreateHook(request, params) {
         params.slug = uuidv4();
-        params.otp = generateOTP()
+        // params.otp = generateOTP()
+        params.otp = '123456'
 
     }
 

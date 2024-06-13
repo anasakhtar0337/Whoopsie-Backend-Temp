@@ -14,23 +14,11 @@ module.exports = (sequelize, Sequelize) => {
         },
         mobile_no: {
             type: Sequelize.STRING(15),
-            allowNull: true,
-            onDelete: 'CASCADE',
-            onUpdate: 'CASCADE',
-            references: {
-                model: require("./User.js")(sequelize, Sequelize),
-                key: 'mobile_no'
-            }
+            allowNull: true
         },
         email: {
             type: Sequelize.STRING(50),
-            allowNull: true,
-            onDelete: 'CASCADE',
-            onUpdate: 'CASCADE',
-            references: {
-                model: require("./User.js")(sequelize, Sequelize),
-                key: 'email'
-            }
+            allowNull: true
         },
         otp: {
             type: Sequelize.STRING(8),
